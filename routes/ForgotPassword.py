@@ -23,7 +23,7 @@ async def forgot_password(
     user_exist = await crud.findUserExist(email_to_lookup, db=db)
     if not user_exist:
         await asyncio.sleep(5)
-        error_message = "User not found."
+        error_message = "User with email does not exist."
         return JSONResponse({"error_message": error_message}, status_code=status.HTTP_404_NOT_FOUND)
     
     reset_code = str(uuid.uuid1())

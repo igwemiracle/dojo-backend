@@ -1,7 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Header, status
+from fastapi.responses import JSONResponse
 from routes.crud import get_current_user
-from models.schemas import CreateBlog
+from models.schemas import CreateBlog, UpdateBlog
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.connection import get_db
 from models.sqlDATA import Blog, User
@@ -69,3 +70,26 @@ async def delete_blog(
     await db.commit()
     
     return {"detail": "Blog deleted successfully"}
+
+
+@createBlog.put("/auth/update/{id}")
+async def update_blog(id: int, update_blog: UpdateBlog, db: AsyncSession = Depends(get_db)):
+    # Query the blog post by id
+    async with db as session:
+        result = await session.execute(select(Blog).filter(Blog.id == id))
+        blog_to_update = result.scalar_one_or_none()
+        
+        if not blog_to_update:
+            raise HTTPException(status_code=404, detail="Blog not found")
+        
+        # Update the fields that are provided in the update_blog object
+        if update_blog.title:
+            blog_to_update.title = update_blog.title
+        if update_blog.body:
+            blog_to_update.body = update_blog.body
+
+        # Commit the changes
+        await session.commit()
+
+        # Return a message to indicate that the blog was successfully updated
+        return JSONResponse(content={"message":"updated successfully"}, status_code=status.HTTP_200_OK)

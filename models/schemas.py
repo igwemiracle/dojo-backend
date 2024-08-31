@@ -29,7 +29,9 @@ class CreateBlog(BaseModel):
     body: str
     date: Optional[datetime] = None
     
-    
+class UpdateBlog(BaseModel):
+    title: Optional[str] = None
+    body: Optional[str] = None
 
 class Token(BaseModel):
     access_token: str
