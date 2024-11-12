@@ -10,7 +10,7 @@ from database.connection import get_db
 from routes import crud
 
 login = APIRouter()
-hashThisPassword = HashPassword()
+HASH = HashPassword()
 
 
 
@@ -33,7 +33,7 @@ async def LoginUser(
         )
 
     # Verify password
-    if not hashThisPassword.verify_hash(password, user_exist.hash_password):
+    if not HASH.verify_hash(password, user_exist.hash_password):
         error_message = "The account does not exist or the password is wrong."
         return JSONResponse(
             {"error_message": error_message},

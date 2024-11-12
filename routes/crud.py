@@ -10,16 +10,17 @@ from authenticate.oauth import oauth2_scheme
 from jose import jwt, JWTError
 from jwt.exceptions import DecodeError
 
-hashThisPassword = HashPassword()
+HASH = HashPassword()
 
 async def createRegisteredUser(username: str, email: str, hashed_password: str, db: AsyncSession):
-    new_user = User(username=username, email=email, hash_password=hashed_password)
+    hash_this_pwd = HASH.create_hash(hashed_password)
+    new_user = User(username=username, email=email, hash_password=hash_this_pwd)
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
     return new_user
 
-async def findUserExist(email: str, db: AsyncSession = Depends(get_db)):
+async def get_user_by_email(email: str, db: AsyncSession = Depends(get_db)):
     query = select(User).where(User.email == email)
     result = await db.execute(query)
     return result.scalar()

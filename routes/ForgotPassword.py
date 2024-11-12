@@ -1,6 +1,6 @@
 import asyncio
 import uuid
-from fastapi import APIRouter, Depends, Form, Request, status
+from fastapi import APIRouter, Depends, status
 from fastapi.responses import RedirectResponse,JSONResponse
 from email_notification.SendEmail import EmailSender
 from database.connection import get_db
@@ -20,7 +20,7 @@ async def forgot_password(
     email_to_lookup = userEmail.email  # Assuming userEmail has an 'email' field
     
     # Check if user exists
-    user_exist = await crud.findUserExist(email_to_lookup, db=db)
+    user_exist = await crud.get_user_by_email(email_to_lookup, db=db)
     if not user_exist:
         await asyncio.sleep(5)
         error_message = "User with email does not exist."
@@ -38,9 +38,8 @@ async def forgot_password(
     <body style="margin:0; padding:0;box-sizing: border-box;font-family: Arial, Helvetica, sans-serif;">
         <div>
             <h1> Hello {email_to_lookup}!</h1>
-            <p>Someone has requested a link to reset your password. If you requested this,<br>you can change
-            your password through the link below .</p>
-            <p><a href="http://localhost:3000/auth/reset_password/?reset_password_token={reset_code}">Reset Password link</a></p>
+            <p>Someone has requested a link to reset your password. If you requested this,<br>you can change your password through the link below.</p>  
+            <p><a href="http://localhost:3000/auth/reset_password/?reset_password_token={reset_code}">click to reset password</a></p>
             <p>If you didn't request this, you can ignore this email.</p>
         </div>
     </body>

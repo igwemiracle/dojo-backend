@@ -12,7 +12,7 @@ class User(Base):
     id = sa.Column(sa.Integer, primary_key=True)
     username = sa.Column(sa.String, nullable=False)
     email = sa.Column(sa.String, unique=True, index=True, nullable=False)
-    hash_password = sa.Column(sa.String, nullable=False)
+    hash_password = sa.Column(sa.String)
     is_logged_in = sa.Column(sa.Boolean, default=False)
 
     # Establishes a relationship with the Blog table

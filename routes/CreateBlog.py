@@ -8,7 +8,6 @@ from database.connection import get_db
 from models.sqlDATA import Blog, User
 from sqlalchemy import select
 from sqlalchemy.future import select
-from starlette.config import Config
 
 createBlog = APIRouter()
 
